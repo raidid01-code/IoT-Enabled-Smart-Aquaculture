@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aquasense Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Login View -->
+    <div id="login-view" class="login-container">
+        <div class="login-box">
+            <h2>Aquasense Login</h2>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+            <p id="login-error" style="color: red; display: none; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <!-- Dashboard View -->
+    <div id="dashboard-view" class="container" style="display: none;">
+        <header class="top-nav">
+            <div class="brand">
+                <h1>Aquasense Dashboard</h1>
+                <div class="status-badge">
+                    <span class="status-dot"></span> Connected
+                </div>
+            </div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchView('data-view')">Data View</button>
+                <button class="tab-btn" onclick="switchView('individual-graph-view')">Individual Graphs</button>
+                <button class="tab-btn" onclick="switchView('combined-graph-view')">Combined Graph</button>
+                <button class="tab-btn" onclick="switchView('history-view')">History Table</button>
+                <button id="logout-btn" class="btn-logout">Logout</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- 1. Data View Section -->
+            <section id="data-view" class="view-section active">
+                <div class="cards-grid">
+                    <div class="card temp-card">
+                        <div class="card-header">TEMPERATURE</div>
+                        <div class="gauge-container">
+                            <div class="gauge temp-gauge"></div>
+                            <div class="value-display" style="color: #f5a623;">
+                                <span id="temp-val">0.0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">°C</div>
+                    </div>
+
+                    <div class="card ph-card">
+                        <div class="card-header">PH LEVEL</div>
+                        <div class="gauge-container">
+                            <div class="gauge ph-gauge"></div>
+                            <div class="value-display" style="color: #0b8a5c;">
+                                <span id="ph-val">0.00</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">pH</div>
+                    </div>
+
+                    <div class="card tds-card">
+                        <div class="card-header">TDS</div>
+                        <div class="gauge-container">
+                            <div class="gauge tds-gauge"></div>
+                            <div class="value-display" style="color: #34a853;">
+                                <span id="tds-val">0.0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">ppm</div>
+                    </div>
+                </div>
+
+                <div class="status-panel">
+                    <div class="card-header">SYSTEM & WATER QUALITY STATUS</div>
+                    
+                    <div class="status-display">
+                        <button id="overall-status" class="status-btn normal">
+                            <span class="status-dot-white"></span> NORMAL
+                        </button>
+                    </div>
+
+                    <div class="hardware-status">
+                        <div class="hw-indicator off" id="pump-indicator">Pump: SYNCING...</div>
+                        <div class="hw-indicator off" id="buzzer-indicator">Buzzer: SYNCING...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Individual Graphs View Section -->
+            <section id="individual-graph-view" class="view-section" style="display: none;">
+                <div class="graph-grid">
+                    <div class="graph-card">
+                        <h2 class="graph-title">Temperature Trend</h2>
+                        <div class="canvas-container"><canvas id="tempChart"></canvas></div>
+                    </div>
+                    <div class="graph-card">
+                        <h2 class="graph-title">pH Level Trend</h2>
+                        <div class="canvas-container"><canvas id="phChart"></canvas></div>
+                    </div>
+                    <div class="graph-card">
+                        <h2 class="graph-title">TDS Trend</h2>
+                        <div class="canvas-container"><canvas id="tdsChart"></canvas></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Combined Graph View Section -->
+            <section id="combined-graph-view" class="view-section" style="display: none;">
+                <div class="graph-card" style="height: 70vh;">
+                    <h2 class="graph-title">All Parameters Combined</h2>
+                    <div class="canvas-container" style="height: 100%;">
+                        <canvas id="combinedChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. History Table View Section -->
+            <section id="history-view" class="view-section" style="display: none;">
+                <div class="card">
+                    <div class="card-header" style="margin-bottom: 15px;">LAST 30 READINGS</div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Temp (°C)</th>
+                                    <th>pH Level</th>
+                                    <th>TDS (ppm)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Data populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- UI Script -->
+    <script>
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(viewId).style.display = 'block';
+            event.target.classList.add('active');
+        }
+    </script>
+    <script type="module" src="scripts/index.js"></script>
+</body>
+</html>
